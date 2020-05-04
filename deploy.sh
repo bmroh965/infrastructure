@@ -11,14 +11,17 @@ if [[ -z "$1" || -z "$2" || -z "$3" ]]; then
   exit 1
 fi
 
-
 action=$1
 fp_context=$2
 domain=$3
-export TF_VAR_fp_context=$fp_context
-export TF_VAR_domain=$domain
 
 . $fp_context.env
+
+export TF_VAR_fp_context=$fp_context
+export TF_VAR_domain=$domain
+export TF_VAR_mongo_project_id=$MONGODB_ATLAS_PROJECT_ID
+export TF_VAR_aws_account_id=$AWS_ACCOUNT_ID
+export TF_VAR_mongo_host=$MONGODB_HOST
 
 cat << EOF > backend.tf
 terraform {
