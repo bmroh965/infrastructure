@@ -22,11 +22,12 @@ export TF_VAR_domain=$domain
 export TF_VAR_mongo_project_id=$MONGODB_ATLAS_PROJECT_ID
 export TF_VAR_aws_account_id=$AWS_ACCOUNT_ID
 export TF_VAR_mongo_host=$MONGODB_HOST
+export TF_VAR_aws_region=$AWS_DEFAULT_REGION
 
 cat << EOF > backend.tf
 terraform {
   backend "s3" {
-    region = "us-east-1"
+    region = "${AWS_DEFAULT_REGION}"
     bucket = "fp-${fp_context}-terraform-state"
     key    = "infrastructure.tfstate"
   }
