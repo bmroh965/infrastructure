@@ -1,19 +1,19 @@
 resource "aws_ssm_parameter" "db_host" {
   name = "/fp/database/host"
   type = "String"
-  value = aws_docdb_cluster.main.endpoint
+  value = var.mongo_host
 }
 
 resource "aws_ssm_parameter" "db_user" {
   name = "/fp/database/user"
   type = "String"
-  value = aws_docdb_cluster.main.master_username
+  value = "fp_app"
 }
 
 resource "aws_ssm_parameter" "db_password" {
   name = "/fp/database/password"
   type = "SecureString"
-  value = random_password.db.result
+  value = random_password.fp_app.result
 }
 
 resource "aws_ssm_parameter" "domain" {
