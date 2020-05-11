@@ -7,7 +7,7 @@ resource "aws_ssm_parameter" "db_host" {
 resource "aws_ssm_parameter" "db_user" {
   name = "/fp/database/user"
   type = "String"
-  value = "fp_app"
+  value = mongodbatlas_database_user.fp_app.username
 }
 
 resource "aws_ssm_parameter" "db_password" {
