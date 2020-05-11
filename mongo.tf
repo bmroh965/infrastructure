@@ -31,6 +31,26 @@ resource "aws_vpc_peering_connection_accepter" "peer" {
   auto_accept = true
 }
 
+# Route tables for peering connection
+# TODO figure out how to make this DRY using a loop
+resource "aws_route" "peering-owner-az1" {
+  route_table_id            = module.vpc.private_route_table_ids[0]
+  destination_cidr_block    = "10.8.0.0/21"
+  vpc_peering_connection_id = mongodbatlas_network_peering.peer.connection_id
+}
+
+resource "aws_route" "peering-owner-az2" {
+  route_table_id            = module.vpc.private_route_table_ids[1]
+  destination_cidr_block    = "10.8.0.0/21"
+  vpc_peering_connection_id = mongodbatlas_network_peering.peer.connection_id
+}
+
+resource "aws_route" "peering-owner-az3" {
+  route_table_id            = module.vpc.private_route_table_ids[2]
+  destination_cidr_block    = "10.8.0.0/21"
+  vpc_peering_connection_id = mongodbatlas_network_peering.peer.connection_id
+}
+
 resource "mongodbatlas_project_ip_whitelist" "whitelist" {
   project_id = local.project_id
   cidr_block = module.vpc.vpc_cidr_block
