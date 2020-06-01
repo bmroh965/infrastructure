@@ -2,23 +2,32 @@
 
 USAGE="
 Usage:
-  PLAN:  ./deploy.sh plan <fp_context> <domain>
-  APPLY: ./deploy.sh apply <fp_context> <domain>
+  PLAN:  ./deploy.sh plan <fp_context>
+  APPLY: ./deploy.sh apply <fp_context>
 "
 
-if [[ -z "$1" || -z "$2" || -z "$3" ]]; then
+if [[ -z "$1" || -z "$2" ]]; then
   echo "$USAGE"
   exit 1
 fi
 
 action=$1
 fp_context=$2
-domain=$3
+
+if [[ "$action" != "plan" && "$action" != "apply" ]]; then
+  echo "$USAGE"
+  exit 1
+fi
+
+if [[ ! -f $fp_context.env ]]; then
+  echo "Cannot find $fp_context.env file."
+  exit 1
+fi
 
 . $fp_context.env
 
 export TF_VAR_fp_context=$fp_context
-export TF_VAR_domain=$domain
+export TF_VAR_domain=$DOMAIN
 export TF_VAR_mongo_project_id=$MONGODB_ATLAS_PROJECT_ID
 export TF_VAR_aws_account_id=$AWS_ACCOUNT_ID
 export TF_VAR_mongo_host=$MONGODB_HOST
