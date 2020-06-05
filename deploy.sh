@@ -43,7 +43,7 @@ terraform {
 }
 EOF
 
-terraform init
+terraform init -reconfigure
 
 if [[ "$action" == "plan" ]]; then
   terraform validate
