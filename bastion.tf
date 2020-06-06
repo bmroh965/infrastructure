@@ -1,10 +1,10 @@
 data "aws_ami" "bastion" {
   most_recent = true
-  owners      = ["amazon"]
+  owners      = ["self"]
 
   filter {
     name   = "name"
-    values = ["amzn2-ami-hvm-*"]
+    values = ["fp-bastion-${var.fp_context}"]
   }
 }
 
