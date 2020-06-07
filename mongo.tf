@@ -56,7 +56,9 @@ resource "aws_vpc_peering_connection_accepter" "peer" {
 }
 
 # Route tables for peering connection
-# TODO figure out how to make this DRY using a loop
+# NOTE: I tried the DRY method using for_each, but it doesn't work if you are planning/applying for the first
+# time, and the VPC is not yet set up. The for_each depends on creating those resources first. As a result,
+# I decided to revert back to the non-DRY declaration of the routes.
 resource "aws_route" "peering-owner-az1" {
   route_table_id            = module.vpc.private_route_table_ids[0]
   destination_cidr_block    = local.atlas_cidr_block
