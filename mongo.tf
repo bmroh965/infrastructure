@@ -3,9 +3,29 @@ locals {
 }
 
 resource "random_password" "fp_app" {
-  length = 16
+  length  = 16
   special = false
-  number = true
+  number  = true
+}
+
+resource "mongodbatlas_cluster" "cluster" {
+  count      = var.fp_context == "production" ? 1 : 0
+  project_id = local.project_id
+  name       = "fp-production"
+  num_shards = 1
+
+  replication_factor           = 3
+  provider_backup_enabled      = true
+  auto_scaling_disk_gb_enabled = true
+  mongo_db_major_version       = "4.2"
+
+  provider_name               = "AWS"
+  disk_size_gb                = 40
+  provider_disk_iops          = 120
+  provider_volume_type        = "STANDARD"
+  provider_encrypt_ebs_volume = true
+  provider_instance_size_name = "M30"
+  provider_region_name        = upper(replace(var.aws_region, "-", "_"))
 }
 
 resource "mongodbatlas_network_container" "container" {
