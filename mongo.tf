@@ -49,7 +49,10 @@ resource "mongodbatlas_network_peering" "peer" {
 # the following assumes an AWS provider is configured
 resource "aws_vpc_peering_connection_accepter" "peer" {
   vpc_peering_connection_id = mongodbatlas_network_peering.peer.connection_id
-  auto_accept = true
+  auto_accept               = true
+  accepter {
+    allow_remote_vpc_dns_resolution = true
+  }
 }
 
 # Route tables for peering connection
@@ -70,6 +73,30 @@ resource "aws_route" "peering-owner-az3" {
   route_table_id            = module.vpc.private_route_table_ids[2]
   destination_cidr_block    = local.atlas_cidr_block
   vpc_peering_connection_id = mongodbatlas_network_peering.peer.connection_id
+}
+
+resource "aws_network_acl" "from_mongo_atlas" {
+  vpc_id = module.vpc.vpc_id
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 100
+    action     = "allow"
+    cidr_block = local.atlas_cidr_block
+    from_port  = 443
+    to_port    = 443
+  }
+}
+
+resource "aws_network_acl" "to_mongo_atlas" {
+  vpc_id = module.vpc.vpc_id
+  egress {
+    protocol   = "tcp"
+    rule_no    = 100
+    action     = "allow"
+    cidr_block = local.atlas_cidr_block
+    from_port  = 27015
+    to_port    = 27017
+  }
 }
 
 resource "mongodbatlas_project_ip_whitelist" "whitelist" {
