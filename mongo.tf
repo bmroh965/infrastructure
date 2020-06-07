@@ -1,5 +1,6 @@
 locals {
-  project_id = var.mongo_project_id
+  project_id       = var.mongo_project_id
+  atlas_cidr_block = "10.8.0.0/21"
 }
 
 resource "random_password" "fp_app" {
@@ -30,7 +31,7 @@ resource "mongodbatlas_cluster" "cluster" {
 
 resource "mongodbatlas_network_container" "container" {
   project_id       = local.project_id
-  atlas_cidr_block = "10.8.0.0/21"
+  atlas_cidr_block = local.atlas_cidr_block
   provider_name    = "AWS"
   region_name      = upper(replace(var.aws_region, "-", "_"))
 }
@@ -55,19 +56,19 @@ resource "aws_vpc_peering_connection_accepter" "peer" {
 # TODO figure out how to make this DRY using a loop
 resource "aws_route" "peering-owner-az1" {
   route_table_id            = module.vpc.private_route_table_ids[0]
-  destination_cidr_block    = "10.8.0.0/21"
+  destination_cidr_block    = local.atlas_cidr_block
   vpc_peering_connection_id = mongodbatlas_network_peering.peer.connection_id
 }
 
 resource "aws_route" "peering-owner-az2" {
   route_table_id            = module.vpc.private_route_table_ids[1]
-  destination_cidr_block    = "10.8.0.0/21"
+  destination_cidr_block    = local.atlas_cidr_block
   vpc_peering_connection_id = mongodbatlas_network_peering.peer.connection_id
 }
 
 resource "aws_route" "peering-owner-az3" {
   route_table_id            = module.vpc.private_route_table_ids[2]
-  destination_cidr_block    = "10.8.0.0/21"
+  destination_cidr_block    = local.atlas_cidr_block
   vpc_peering_connection_id = mongodbatlas_network_peering.peer.connection_id
 }
 
