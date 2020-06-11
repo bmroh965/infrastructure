@@ -1,16 +1,37 @@
 locals {
-  project_id = var.mongo_project_id
+  project_id       = var.mongo_project_id
+  atlas_cidr_block = "10.8.0.0/21"
 }
 
 resource "random_password" "fp_app" {
-  length = 16
+  length  = 16
   special = false
-  number = true
+  number  = true
+}
+
+resource "mongodbatlas_cluster" "cluster" {
+  count      = var.fp_context == "production" ? 1 : 0
+  project_id = local.project_id
+  name       = "fp-production"
+  num_shards = 1
+
+  replication_factor           = 3
+  provider_backup_enabled      = true
+  auto_scaling_disk_gb_enabled = true
+  mongo_db_major_version       = "4.2"
+
+  provider_name               = "AWS"
+  disk_size_gb                = 40
+  provider_disk_iops          = 120
+  provider_volume_type        = "STANDARD"
+  provider_encrypt_ebs_volume = true
+  provider_instance_size_name = "M30"
+  provider_region_name        = upper(replace(var.aws_region, "-", "_"))
 }
 
 resource "mongodbatlas_network_container" "container" {
   project_id       = local.project_id
-  atlas_cidr_block = "10.8.0.0/21"
+  atlas_cidr_block = local.atlas_cidr_block
   provider_name    = "AWS"
   region_name      = upper(replace(var.aws_region, "-", "_"))
 }
@@ -28,14 +49,56 @@ resource "mongodbatlas_network_peering" "peer" {
 # the following assumes an AWS provider is configured
 resource "aws_vpc_peering_connection_accepter" "peer" {
   vpc_peering_connection_id = mongodbatlas_network_peering.peer.connection_id
-  auto_accept = true
+  auto_accept               = true
+  accepter {
+    allow_remote_vpc_dns_resolution = true
+  }
 }
 
-resource "aws_route" "peering_to_owner" {
-  for_each = toset(module.vpc.private_route_table_ids)
-  destination_cidr_block = "10.8.0.0/21"
+# Route tables for peering connection
+# NOTE: I tried the DRY method using for_each, but it doesn't work if you are planning/applying for the first
+# time, and the VPC is not yet set up. The for_each depends on creating those resources first. As a result,
+# I decided to revert back to the non-DRY declaration of the routes.
+resource "aws_route" "peering-owner-az1" {
+  route_table_id            = module.vpc.private_route_table_ids[0]
+  destination_cidr_block    = local.atlas_cidr_block
   vpc_peering_connection_id = mongodbatlas_network_peering.peer.connection_id
-  route_table_id = each.value
+}
+
+resource "aws_route" "peering-owner-az2" {
+  route_table_id            = module.vpc.private_route_table_ids[1]
+  destination_cidr_block    = local.atlas_cidr_block
+  vpc_peering_connection_id = mongodbatlas_network_peering.peer.connection_id
+}
+
+resource "aws_route" "peering-owner-az3" {
+  route_table_id            = module.vpc.private_route_table_ids[2]
+  destination_cidr_block    = local.atlas_cidr_block
+  vpc_peering_connection_id = mongodbatlas_network_peering.peer.connection_id
+}
+
+resource "aws_network_acl" "from_mongo_atlas" {
+  vpc_id = module.vpc.vpc_id
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 100
+    action     = "allow"
+    cidr_block = local.atlas_cidr_block
+    from_port  = 443
+    to_port    = 443
+  }
+}
+
+resource "aws_network_acl" "to_mongo_atlas" {
+  vpc_id = module.vpc.vpc_id
+  egress {
+    protocol   = "tcp"
+    rule_no    = 100
+    action     = "allow"
+    cidr_block = local.atlas_cidr_block
+    from_port  = 27015
+    to_port    = 27017
+  }
 }
 
 resource "mongodbatlas_project_ip_whitelist" "whitelist" {

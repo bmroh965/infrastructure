@@ -11,6 +11,8 @@ module "vpc" {
 
   create_database_subnet_group = true
   create_database_subnet_route_table = true
+  enable_dns_hostnames = true
+  enable_dns_support = true
   enable_nat_gateway = true
   enable_vpn_gateway = true
   create_database_internet_gateway_route = true
