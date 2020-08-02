@@ -3,3 +3,4 @@
 *tfstate*
 *.env
 backend.tf
+tmp
