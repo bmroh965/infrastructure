@@ -15,7 +15,9 @@ This repo contains the Terraform code for setting up the FightPandemics infrastr
 
 1. Clone this repo, and create a new branch.
 
-1. Copy `development.env.example` to `development.env`. In the `#devops` Slack channel, ask for the proper values to add to this file for the development environment. Please note that the AWS credentials are session-based, and therefore they are short-lived. You will need to continually retrieve new credentials after they expire. Please ask in the `#devops` channel for instructions on how to retrieve these credentials.
+1. Change directory into the `infra` folder in this repo.
+
+1. Copy `fp_context.env.example` to `development.env`. In the `#devops` Slack channel, ask for the proper values to add to this file for the development environment. Please note that the AWS credentials are session-based, and therefore they are short-lived. You will need to continually retrieve new credentials after they expire. Please ask in the `#devops` channel for instructions on how to retrieve these credentials.
 
 1. Confirm in the `#devops` channel that no one else is currently working in the development AWS account, so that you don't interfere with their work.
 
