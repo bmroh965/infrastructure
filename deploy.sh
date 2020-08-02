@@ -4,6 +4,7 @@ USAGE="
 Usage:
   PLAN:  ./deploy.sh plan <fp_context>
   APPLY: ./deploy.sh apply <fp_context>
+  DESTROY: ./deploy.sh destroy <fp_context>
 "
 
 if [[ -z "$1" || -z "$2" ]]; then
@@ -14,7 +15,7 @@ fi
 action=$1
 fp_context=$2
 
-if [[ "$action" != "plan" && "$action" != "apply" ]]; then
+if [[ "$action" != "plan" && "$action" != "apply" && "$action" != "destroy" ]]; then
   echo "$USAGE"
   exit 1
 fi
@@ -44,12 +45,5 @@ terraform {
 EOF
 
 terraform init -reconfigure
+terraform $1
 
-if [[ "$action" == "plan" ]]; then
-  terraform validate
-  terraform plan
-elif [[ "$action" == "apply" ]]; then
-  terraform apply -auto-approve
-else
-  echo "Invalid action $action"
-fi
