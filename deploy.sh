@@ -5,6 +5,7 @@ Usage:
   PLAN:  ./deploy.sh plan <fp_context>
   APPLY: ./deploy.sh apply <fp_context>
   DESTROY: ./deploy.sh destroy <fp_context>
+  VALIDATE: ./deploy.sh validate <fp_context>
 "
 
 if [[ -z "$1" || -z "$2" ]]; then
@@ -15,7 +16,7 @@ fi
 action=$1
 fp_context=$2
 
-if [[ "$action" != "plan" && "$action" != "apply" && "$action" != "destroy" ]]; then
+if [[ "$action" != "plan" && "$action" != "apply" && "$action" != "destroy" && "$action" != "validate" ]]; then
   echo "$USAGE"
   exit 1
 fi
