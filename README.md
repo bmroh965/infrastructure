@@ -10,6 +10,8 @@ This repo contains the Terraform code for setting up the FightPandemics infrastr
 
 1. Request access to our sandbox development AWS account.
 
+1. Request a MongoDB Atlas API key that whitelists your IP address (ask in the `#devops`) channel
+
 
 ## Contributing
 
