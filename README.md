@@ -6,11 +6,10 @@ This repo contains the Terraform code for setting up the FightPandemics infrastr
 
 1. Install Terraform, by downloading the package for your operating system [here](https://www.terraform.io/downloads.html). Alternatively, you can run Terraform in [Docker](https://hub.docker.com/r/hashicorp/terraform).
 
-1. Request access to this repository.
-
-1. Request access to our sandbox development AWS account.
-
-1. Request a MongoDB Atlas API key that whitelists your IP address (ask in the `#devops`) channel
+1. In the `#devops` Slack channel, ask for the following:
+- Access to this repository (provide your Github username)
+- Access to our sandbox development AWS account (provide your email address)
+- MongoDB Atlas API key (provide your IP address to be whitelisted)
 
 
 ## Contributing
