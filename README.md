@@ -4,7 +4,7 @@ This repo contains the Terraform code for setting up the FightPandemics infrastr
 
 ## Prerequisites
 
-1. Install Terraform, by downloading the package for your operating system [here](https://www.terraform.io/downloads.html). Alternatively, you can run Terraform in [Docker](https://hub.docker.com/r/hashicorp/terraform).
+1. Install Terraform v0.12.29 by downloading the package for your operating system [here](https://www.terraform.io/downloads.html). Alternatively, you can run Terraform in [Docker](https://hub.docker.com/r/hashicorp/terraform). NOTE: Please install Terraform v0.12.29 as v0.13 has some breaking changes.
 
 1. In the `#devops` Slack channel, ask for the following:
 - Access to this repository (provide your Github username)

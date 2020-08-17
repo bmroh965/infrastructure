@@ -42,9 +42,10 @@ terraform {
     bucket = "fp-${fp_context}-terraform-state"
     key    = "infrastructure.tfstate"
   }
+
+  required_version = "~> 0.12.29"
 }
 EOF
 
 terraform init -reconfigure
 terraform $1
-
