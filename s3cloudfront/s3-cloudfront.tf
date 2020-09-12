@@ -1,8 +1,16 @@
-# Create S3 bucket.
+# Create S3 bucket for cdn.
 resource "aws_s3_bucket" "cdn" {
     bucket = "${var.fp_context}-cdn-bucket"
     tags = {
        Name = "${var.fp_context}-cdn-bucket"
+     } 
+}
+
+# Create S3 bucket for cdn logs.
+resource "aws_s3_bucket" "cdn-logs" {
+    bucket = "${var.cdnlogs_bucket}"
+    tags = {
+       Name = "${var.cdnlogs_bucket}"
      } 
 }
 
@@ -30,14 +38,14 @@ resource "aws_cloudfront_distribution" "fp_cdn" {
   comment             = "Fight Pandemic CDN distribution"
   default_root_object = "index.html"
  
- /*
+ 
  # logging cofig 
    logging_config {
     include_cookies = false
-    bucket          = "cdn-logs.s3.amazonaws.com"
-    prefix          = "myprefix"
+    bucket          = "${aws_s3_bucket.cdn-logs.bucket_domain_name}"
+    prefix          = "fpcdn"    
   }
- 
+ /*
   # Alternate domain names if any. 
   aliases = ["cdn.${var.domain}"]
 */

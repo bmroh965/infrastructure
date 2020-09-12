@@ -31,6 +31,7 @@ fi
 export TF_VAR_fp_context=$fp_context
 export TF_VAR_domain=$DOMAIN
 export TF_VAR_aws_region=$AWS_DEFAULT_REGION
+export TF_VAR_cdnlogs_bucket=$CDNLOGS_BUCKET
 
 cat << EOF > backend.tf
 terraform {

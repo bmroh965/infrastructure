@@ -15,3 +15,7 @@ variable "fp_context" {
 variable "domain" {
   type = string
 }
+
+variable "cdnlogs_bucket" {
+  type = string
+}
