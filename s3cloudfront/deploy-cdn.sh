@@ -30,8 +30,19 @@ fi
 
 export TF_VAR_fp_context=$fp_context
 export TF_VAR_domain=$DOMAIN
-export TF_VAR_aws_account_id=$AWS_ACCOUNT_ID
 export TF_VAR_aws_region=$AWS_DEFAULT_REGION
+
+cat << EOF > backend.tf
+terraform {
+  backend "s3" {
+    region = "${AWS_DEFAULT_REGION}"
+    bucket = "fp-${fp_context}-terraform-state"
+    key    = "cdninfra.tfstate"
+  }
+
+  required_version = "~> 0.12.29"
+}
+EOF
 
 terraform init -reconfigure
 terraform $1

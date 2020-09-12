@@ -11,9 +11,7 @@ variable "aws_region" {
 variable "fp_context" {
   type = string
 }
+
 variable "domain" {
-  type = string
-}
-variable "aws_account_id" {
   type = string
 }

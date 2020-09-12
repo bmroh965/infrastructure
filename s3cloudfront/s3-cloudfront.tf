@@ -1,14 +1,6 @@
-terraform {
-  backend "s3" {
-    bucket = "fp-${fp_context}-cdn-terraform-state"
-    region = "${AWS_DEFAULT_REGION}"
-    key    = "${fp_context}-cdn.tfstate"
-  }
-}
-
 # Create S3 bucket.
 resource "aws_s3_bucket" "cdn" {
-    bucket = "${fp_context}-cdn-bucket"
+    bucket = "${var.fp_context}-cdn-bucket"
     tags = {
        Name = "${var.fp_context}-cdn-bucket"
      } 
@@ -20,7 +12,7 @@ resource "aws_cloudfront_origin_access_identity" "oai" {
 }
 
 locals {
-  s3_origin_id = "org_${aws_s3_bucket.cdn}"
+  s3_origin_id = "${aws_s3_bucket.cdn.id}-org"
 }
 # origin - cloudfront get its content.
 resource "aws_cloudfront_distribution" "fp_cdn" {
@@ -38,19 +30,19 @@ resource "aws_cloudfront_distribution" "fp_cdn" {
   comment             = "Fight Pandemic CDN distribution"
   default_root_object = "index.html"
  
- # logging cofig 
  /*
-  logging_config {
+ # logging cofig 
+   logging_config {
     include_cookies = false
-    bucket          = "mylogs.s3.amazonaws.com"
+    bucket          = "cdn-logs.s3.amazonaws.com"
     prefix          = "myprefix"
   }
  
   # Alternate domain names if any. 
-  aliases = ["mysite.example.com", "yoursite.example.com"]
+  aliases = ["cdn.${var.domain}"]
 */
   default_cache_behavior {
-    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = local.s3_origin_id
 
@@ -106,7 +98,6 @@ resource "aws_cloudfront_distribution" "fp_cdn" {
       }
     }
 
-
     min_ttl                = 0
     default_ttl            = 3600
     max_ttl                = 86400
@@ -118,13 +109,12 @@ resource "aws_cloudfront_distribution" "fp_cdn" {
 
   restrictions {
     geo_restriction {
-      restriction_type = "whitelist"
-      locations        = ["US", "CA", "EU"]
+      restriction_type = "none"
     }
   }
 
   tags = {
-    Environment = "production"
+    Environment = "${var.fp_context}"
   }
 
   viewer_certificate {
