@@ -9,6 +9,7 @@ resource "aws_s3_bucket" "cdn" {
 # Create S3 bucket for cdn logs.
 resource "aws_s3_bucket" "cdn-logs" {
     bucket = "${var.cdnlogs_bucket}"
+    acl    = "private"
     tags = {
        Name = "${var.cdnlogs_bucket}"
      } 
@@ -18,6 +19,15 @@ resource "aws_s3_bucket" "cdn-logs" {
 resource "aws_cloudfront_origin_access_identity" "oai" {
     comment = "cloudfront origin access identity"
 }
+
+/*
+# use this code if you have a domain and certificate.
+# Find certificate that is issued for the domain
+data "aws_acm_certificate" "fp_issued" {
+  domain   = "${var.domain}"
+  statuses = ["ISSUED"]
+}
+*/
 
 locals {
   s3_origin_id = "${aws_s3_bucket.cdn.id}-org"
@@ -45,10 +55,13 @@ resource "aws_cloudfront_distribution" "fp_cdn" {
     bucket          = "${aws_s3_bucket.cdn-logs.bucket_domain_name}"
     prefix          = "fpcdn"    
   }
+ 
  /*
+  # use this code if you have a domain and certificate.
   # Alternate domain names if any. 
   aliases = ["cdn.${var.domain}"]
-*/
+ */
+
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD"]
@@ -131,9 +144,8 @@ resource "aws_cloudfront_distribution" "fp_cdn" {
 /*
  # to use other certificate:
   viewer_certificate {
-    acm_certificate_arn = "${aws_acm_certificate.acm_certificate.arn}"
+    acm_certificate_arn = "${data.aws_acm_certificate.fp_issued.domain}"
     ssl_support_method  = "sni-only"
   }
 */
-
 }
