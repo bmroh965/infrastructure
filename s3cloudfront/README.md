@@ -18,7 +18,7 @@ Note that the Terraform state for this module is separate from the main infrastr
 
 1. Change directory into the `s3cloudfront` folder in this repo.
 
-1. Copy `fp_context.cdn.env.example` to `develpment.env`. In the `#devops` Slack channel, ask for the proper values to add to this file for the development environment. Please note that the AWS credentials are session-based, and therefore they are short-lived. 
+1. Copy `fp_context.cdn.env.example` to `development.env`. In the `#devops` Slack channel, ask for the proper values to add to this file for the development environment. Please note that the AWS credentials are session-based, and therefore they are short-lived.
 
 1. Confirm in the `#devops` channel that no one else is currently working in the development AWS account, so that you don't interfere with their work.
 
