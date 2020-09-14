@@ -11,22 +11,33 @@ data "aws_iam_policy_document" "s3_pol" {
     resources = ["${aws_s3_bucket.cdn.arn}/*"]
   }
 }
-/*
+
+data "aws_iam_role" "web_server_ecs_execution_role" {
+  name = "ecs-task-execution"
+}
+
 data "aws_iam_policy_document" "s3_pol_rwd" {
   statement {
     actions = [
       "s3:GetObject",
       "s3:PutObject",
       "s3:DeleteObject"
-      ]
-    principals 
-    {"AWS": ["arn:aws:iam::111122223333:root","arn:aws:iam::444455556666:root"]},
-    
+    ]
+    principals {
+      type = "AWS"
+      identifiers = [data.aws_iam_role.web_server_ecs_execution_role.arn]
+    }
+
     resources = ["${aws_s3_bucket.cdn.arn}/*"]
   }
 }
-*/
+
 resource "aws_s3_bucket_policy" "atch_s3_pol_attach" {
   bucket = aws_s3_bucket.cdn.id
   policy = data.aws_iam_policy_document.s3_pol.json
+}
+
+resource "aws_s3_bucket_policy" "attach_web_server_policy" {
+  bucket = aws_s3_bucket.cdn.id
+  policy = data.aws_iam_policy_document.s3_pol_rwd.json
 }
