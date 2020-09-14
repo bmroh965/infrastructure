@@ -1,23 +1,23 @@
 # Create S3 bucket for cdn.
 resource "aws_s3_bucket" "cdn" {
-    bucket = "fp-${var.fp_context}-cdn"
-    tags = {
-      Name = "fp-${var.fp_context}-cdn"
-    }
+  bucket = "fp-${var.fp_context}-cdn"
+  tags = {
+    Name = "fp-${var.fp_context}-cdn"
+  }
 }
 
 # Create S3 bucket for cdn logs.
 resource "aws_s3_bucket" "cdn-logs" {
-    bucket = "fp-${var.fp_context}-cdn-logs"
-    acl    = "private"
-    tags = {
-       Name = "fp-${var.fp_context}-cdn-logs"
-     }
+  bucket = "fp-${var.fp_context}-cdn-logs"
+  acl    = "private"
+  tags = {
+    Name = "fp-${var.fp_context}-cdn-logs"
+  }
 }
 
 # Create Origin Access Identity for CDN-S3.
 resource "aws_cloudfront_origin_access_identity" "oai" {
-    comment = "cloudfront origin access identity"
+  comment = "cloudfront origin access identity"
 }
 
 /*
@@ -47,18 +47,18 @@ resource "aws_cloudfront_distribution" "fp_cdn" {
   is_ipv6_enabled     = true
   comment             = "Fight Pandemic CDN distribution"
   default_root_object = "index.html"
- 
- 
- # logging cofig 
-   logging_config {
+
+
+  # logging cofig
+  logging_config {
     include_cookies = false
     bucket          = "${aws_s3_bucket.cdn-logs.bucket_domain_name}"
-    prefix          = "fpcdn"    
+    prefix          = "fpcdn"
   }
- 
- /*
+
+  /*
   # use this code if you have a domain and certificate.
-  # Alternate domain names if any. 
+  # Alternate domain names if any.
   aliases = ["cdn.${var.domain}"]
  */
 
@@ -141,7 +141,7 @@ resource "aws_cloudfront_distribution" "fp_cdn" {
   viewer_certificate {
     cloudfront_default_certificate = true
   }
-/*
+  /*
  # to use other certificate:
   viewer_certificate {
     acm_certificate_arn = "${data.aws_acm_certificate.fp_issued.domain}"
