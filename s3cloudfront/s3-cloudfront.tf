@@ -1,18 +1,18 @@
 # Create S3 bucket for cdn.
 resource "aws_s3_bucket" "cdn" {
-    bucket = "${var.fp_context}-cdn-bucket"
+    bucket = "fp-${var.fp_context}-cdn"
     tags = {
-       Name = "${var.fp_context}-cdn-bucket"
-     } 
+      Name = "fp-${var.fp_context}-cdn"
+    }
 }
 
 # Create S3 bucket for cdn logs.
 resource "aws_s3_bucket" "cdn-logs" {
-    bucket = "${var.cdnlogs_bucket}"
+    bucket = "fp-${var.fp_context}-cdn-logs"
     acl    = "private"
     tags = {
-       Name = "${var.cdnlogs_bucket}"
-     } 
+       Name = "fp-${var.fp_context}-cdn-logs"
+     }
 }
 
 # Create Origin Access Identity for CDN-S3.
