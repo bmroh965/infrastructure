@@ -10,13 +10,6 @@ data "aws_iam_policy_document" "s3_pol" {
     }
     resources = ["${aws_s3_bucket.cdn.arn}/*"]
   }
-}
-
-data "aws_iam_role" "web_server_ecs_execution_role" {
-  name = "ecs-task-execution"
-}
-
-data "aws_iam_policy_document" "s3_pol_rwd" {
   statement {
     actions = [
       "s3:GetObject",
@@ -32,12 +25,11 @@ data "aws_iam_policy_document" "s3_pol_rwd" {
   }
 }
 
+data "aws_iam_role" "web_server_ecs_execution_role" {
+  name = "ecs-task-execution"
+}
+
 resource "aws_s3_bucket_policy" "atch_s3_pol_attach" {
   bucket = aws_s3_bucket.cdn.id
   policy = data.aws_iam_policy_document.s3_pol.json
-}
-
-resource "aws_s3_bucket_policy" "attach_web_server_policy" {
-  bucket = aws_s3_bucket.cdn.id
-  policy = data.aws_iam_policy_document.s3_pol_rwd.json
 }
