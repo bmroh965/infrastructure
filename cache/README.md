@@ -6,7 +6,7 @@ Note that the Terraform state for this module is separate from the main infrastr
 
 ## Prerequisites
 
-1. Install Terraform v0.12.29 by downloading the package for your operating system [here](https://www.terraform.io/downloads.html). Alternatively, you can run Terraform in [Docker](https://hub.docker.com/r/hashicorp/terraform). NOTE: Please install Terraform v0.12.29 as v0.13 has some breaking changes.
+1. Install Terraform v0.12.29 by downloading the package for your operating system [here](https://releases.hashicorp.com/terraform/0.12.29/). (Note that the Mac version is the zip file with `darwin` in the file name). Alternatively, you can run Terraform in [Docker](https://hub.docker.com/r/hashicorp/terraform). NOTE: Please install Terraform v0.12.29 as v0.13 has some breaking changes. It is a good idea to maintain multiple versions of Terraform on your machine in case you are working with multiple projects that use different Terraform versions. I would recommend renaming the `terraform` binary for v0.12.29 to `terraform0.12.29` to avoid confusion with the latest version of Terraform. On my computer, I placed all my Terraform binaries in the `/usr/local/bin/` directory which is in my `PATH`. However, they can be placed in any directory on your computer that is in your `PATH`. If you decide to do this, you will need to update the `deploy.sh` script to call `terraform0.12.29` so that it uses the correct Terraform binary.
 
 1. In the `#devops` Slack channel, ask for the following:
 - Access to this repository (provide your Github username)
